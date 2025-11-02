@@ -5,14 +5,16 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/yukikwi/go-nuxt-boilerplate/config"
+	handlers_home "github.com/yukikwi/go-nuxt-boilerplate/handlers/home"
 )
 
 func main() {
 	app := fiber.New()
+	api := app.Group("/api")
+	v1 := api.Group("/v1")
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
+	// Register handlers module routes
+	handlers_home.RegisterHomeRoutes(v1)
 
 	app.Listen(":" + config.Config["Port"])
 	slog.Info("Server is running on port " + config.Config["Port"])
