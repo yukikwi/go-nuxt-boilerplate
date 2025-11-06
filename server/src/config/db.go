@@ -7,8 +7,10 @@ import (
 	"gorm.io/gorm"
 )
 
+var Db *gorm.DB
+
 func OpenDatabaseConnection() *gorm.DB {
-	var db, err = gorm.Open(postgres.Open(Config["Db"]), &gorm.Config{})
+	var db, err = gorm.Open(postgres.Open(Config.Db), &gorm.Config{})
 	if err != nil {
 		slog.Error("failed to connect database", "error", err)
 	}
@@ -16,4 +18,8 @@ func OpenDatabaseConnection() *gorm.DB {
 	return db
 }
 
-var DB = OpenDatabaseConnection()
+func init() {
+	slog.Info("Connecting to database...")
+	Db = OpenDatabaseConnection()
+	slog.Info("Database connected.")
+}
