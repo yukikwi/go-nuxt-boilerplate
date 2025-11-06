@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+	slog.Info("Starting server...")
 	app := fiber.New(fiber.Config{
 		ErrorHandler: utils.ErrorHandler,
 	})
@@ -19,6 +20,6 @@ func main() {
 	// Register handlers module routes
 	handlers_home.RegisterHomeRoutes(v1)
 
-	app.Listen(":" + config.Config["Port"])
-	slog.Info("Server is running on port " + config.Config["Port"])
+	app.Listen(":" + config.Config.Port)
+	slog.Info("Server is running on port " + config.Config.Port)
 }
