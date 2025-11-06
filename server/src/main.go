@@ -6,10 +6,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/yukikwi/go-nuxt-boilerplate/config"
 	handlers_home "github.com/yukikwi/go-nuxt-boilerplate/handlers/home"
+	"github.com/yukikwi/go-nuxt-boilerplate/utils"
 )
 
 func main() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: utils.ErrorHandler,
+	})
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
 
