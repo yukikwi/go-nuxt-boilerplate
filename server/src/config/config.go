@@ -4,7 +4,18 @@ import (
 	"github.com/yukikwi/go-nuxt-boilerplate/utils"
 )
 
-var Config = map[string]string{
-	"Db":   utils.GetEnv("DB_DSN", ""),
-	"Port": utils.GetEnv("PORT", "3000"),
+type (
+	ConfigInterface struct {
+		Db   string
+		Port string
+	}
+)
+
+var Config ConfigInterface
+
+func init() {
+	Config = ConfigInterface{
+		Db:   utils.GetEnv("DB_DSN", ""),
+		Port: utils.GetEnv("PORT", "3000"),
+	}
 }
