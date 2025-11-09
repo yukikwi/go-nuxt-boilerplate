@@ -9,6 +9,14 @@ import (
 	"github.com/yukikwi/go-nuxt-boilerplate/utils"
 )
 
+// Speak api endpoint
+// @Summary Save provided message and return it prefixed with "You said: {message}"
+// @Tags Home
+// @Accept json
+// @Produce json
+// @Param payload body SpeakRequestSerializer true "payload"
+// @Success 200 {string} string "OK"
+// @Router /home/speak [post]
 func SpeakPostView(c *fiber.Ctx) error {
 	var body SpeakRequestSerializer
 	if err := utils.ValidateDataStruct(c, &body); err != nil {
