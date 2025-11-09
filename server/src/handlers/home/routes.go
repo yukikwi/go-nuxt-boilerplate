@@ -1,16 +1,28 @@
 package handlers_home
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"context"
+	"net/http"
+
+	"github.com/danielgtaylor/huma/v2"
 )
 
-func RegisterHomeRoutes(router fiber.Router) {
-	homeRouter := router.Group("/home")
-	homeRouter.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Welcome to the Home Page!")
+func RegisterHomeRoutes(versionGroup *huma.Group) {
+	homeRouter := huma.NewGroup(versionGroup, "/home")
+
+	huma.Register(homeRouter, huma.Operation{
+		OperationID: "home-get-root",
+		Method:      http.MethodGet,
+		Path:        "/",
+		Summary:     "Get a home example page",
+		Tags:        []string{"Home"},
+	}, func(ctx context.Context, input *struct{}) (*SpeakGetResponseSerializer, error) {
+		resp := &SpeakGetResponseSerializer{}
+		resp.Body.Message = "Hello, world!"
+		return resp, nil
 	})
 
-	homeRouter.Post("/speak", func(c *fiber.Ctx) error {
-		return SpeakPostView(c)
+	huma.Post(homeRouter, "/speak", func(ctx context.Context, input *SpeakPostRequestSerializer) (*SpeakPostResponseSerializer, error) {
+		return SpeakPostView(ctx, input)
 	})
 }

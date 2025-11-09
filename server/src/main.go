@@ -3,14 +3,14 @@ package main
 import (
 	"log/slog"
 
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humafiber"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/swagger"
 
 	// Internal packages
 	"github.com/yukikwi/go-nuxt-boilerplate/config"
-	_ "github.com/yukikwi/go-nuxt-boilerplate/docs"
+	handlers_doc "github.com/yukikwi/go-nuxt-boilerplate/handlers/doc"
 	handlers_home "github.com/yukikwi/go-nuxt-boilerplate/handlers/home"
-	"github.com/yukikwi/go-nuxt-boilerplate/utils"
 )
 
 // @title Go Nuxt Boilerplate API
@@ -21,16 +21,14 @@ import (
 // @BasePath  /api/v1
 func main() {
 	slog.Info("Starting server...")
-	app := fiber.New(fiber.Config{
-		ErrorHandler: utils.ErrorHandler,
-	})
-	api := app.Group("/api")
-	v1 := api.Group("/v1")
+	app := fiber.New()
+	api := humafiber.New(app, huma.DefaultConfig("Book API", "1.0.0"))
+	v1 := huma.NewGroup(api, "/v1")
 
 	// Register handlers module routes
 	handlers_home.RegisterHomeRoutes(v1)
+	handlers_doc.RegisterHomeRoutes(api)
 
-	app.Get("/swagger/*", swagger.HandlerDefault)
 	app.Listen(":" + config.Config.Port)
 	slog.Info("Server is running on port " + config.Config.Port)
 }

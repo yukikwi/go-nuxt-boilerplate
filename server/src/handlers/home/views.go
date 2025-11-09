@@ -1,36 +1,23 @@
 package handlers_home
 
 import (
+	"context"
 	"log/slog"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/yukikwi/go-nuxt-boilerplate/config"
 	"github.com/yukikwi/go-nuxt-boilerplate/models"
-	"github.com/yukikwi/go-nuxt-boilerplate/utils"
 )
 
-// Speak api endpoint
-// @Summary Save provided message and return it prefixed with "You said: {message}"
-// @Tags Home
-// @Accept json
-// @Produce json
-// @Param payload body SpeakRequestSerializer true "payload"
-// @Success 200 {string} string "OK"
-// @Router /home/speak [post]
-func SpeakPostView(c *fiber.Ctx) error {
-	var body SpeakRequestSerializer
-	if err := utils.ValidateDataStruct(c, &body); err != nil {
-		slog.Error("homeRouter.Post('/speak')", "error", err)
-		return c.JSON(utils.ValidationErrorResponse{Error: err.Error()})
-	}
-
+func SpeakPostView(ctx context.Context, input *SpeakPostRequestSerializer) (*SpeakPostResponseSerializer, error) {
 	// Insert Message to Model
-	message := models.Message{MessageText: body.Message}
+	message := models.Message{MessageText: input.Body.Message}
 	result := config.Db.Create(&message)
 	if result.Error != nil {
 		slog.Error("Failed to insert message", "error", result.Error)
-		return c.Status(fiber.StatusInternalServerError).JSON(utils.GenericErrorResponse{Error: "Failed to save message"})
+		return nil, result.Error
 	}
 
-	return c.JSON(SpeakResponseSerializer{Result: "You said: " + body.Message})
+	resp := &SpeakPostResponseSerializer{}
+	resp.Body.Message = "You said: " + input.Body.Message
+	return resp, nil
 }
