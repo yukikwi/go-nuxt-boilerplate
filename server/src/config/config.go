@@ -6,8 +6,9 @@ import (
 
 type (
 	ConfigInterface struct {
-		Db   string
-		Port string
+		Db          string
+		Port        string
+		Environment string
 	}
 )
 
@@ -15,7 +16,8 @@ var Config ConfigInterface
 
 func init() {
 	Config = ConfigInterface{
-		Db:   utils.GetEnv("DB_DSN", ""),
-		Port: utils.GetEnv("PORT", "3000"),
+		Db:          utils.GetEnv("DB_DSN", ""),
+		Port:        utils.GetEnv("PORT", "3000"),
+		Environment: utils.GetEnv("ENVIRONMENT", "development"),
 	}
 }
