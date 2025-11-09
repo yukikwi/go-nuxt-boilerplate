@@ -11,6 +11,6 @@ func RegisterHomeRoutes(router fiber.Router) {
 	})
 
 	homeRouter.Post("/speak", func(c *fiber.Ctx) error {
-		return SpeakView(c)
+		return SpeakPostView(c)
 	})
 }

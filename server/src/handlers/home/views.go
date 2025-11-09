@@ -9,7 +9,7 @@ import (
 	"github.com/yukikwi/go-nuxt-boilerplate/utils"
 )
 
-func SpeakView(c *fiber.Ctx) error {
+func SpeakPostView(c *fiber.Ctx) error {
 	var body SpeakRequestSerializer
 	if err := utils.ValidateDataStruct(c, &body); err != nil {
 		slog.Error("homeRouter.Post('/speak')", "error", err)
