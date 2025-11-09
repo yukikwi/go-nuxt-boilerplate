@@ -2,6 +2,7 @@ package handlers_home
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 
 	"github.com/yukikwi/go-nuxt-boilerplate/config"
@@ -14,7 +15,7 @@ func SpeakPostView(ctx context.Context, input *SpeakPostRequestSerializer) (*Spe
 	result := config.Db.Create(&message)
 	if result.Error != nil {
 		slog.Error("Failed to insert message", "error", result.Error)
-		return nil, result.Error
+		return nil, errors.New("failed to insert message")
 	}
 
 	resp := &SpeakPostResponseSerializer{}
