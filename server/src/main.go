@@ -2,10 +2,13 @@ package main
 
 import (
 	"log/slog"
+	"os"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humafiber"
+	"github.com/danielgtaylor/huma/v2/humacli"
 	"github.com/gofiber/fiber/v2"
+	"github.com/spf13/cobra"
 
 	// Internal packages
 	"github.com/yukikwi/go-nuxt-boilerplate/config"
@@ -14,26 +17,60 @@ import (
 	"github.com/yukikwi/go-nuxt-boilerplate/utils"
 )
 
-// @title Go Nuxt Boilerplate API
-// @version 1.0
-// @contact.name Pachara Chantawong
-// @contact.email pachara.chantawong@gmail.com
-// @host localhost:3000
-// @BasePath  /api/v1
-func main() {
+func setupAPIServer(api *huma.API) {
 	slog.Info("Starting server in " + config.Config.Environment + " environment...")
-	app := fiber.New()
-	api := humafiber.New(app, utils.BuildConfig("Book API", "1.0.0", config.Config.Environment))
-	v1 := huma.NewGroup(api, "/v1")
+	v1 := huma.NewGroup(*api, "/v1")
 
 	// Register handlers module routes
 	handlers_home.RegisterHomeRoutes(v1)
 
 	// Register development-only routes
 	if config.Config.Environment == "development" {
-		handlers_doc.RegisterHomeRoutes(api)
+		handlers_doc.RegisterHomeRoutes(*api)
 	}
 
-	app.Listen(":" + config.Config.Port)
-	slog.Info("Server is running on port " + config.Config.Port)
+}
+
+func main() {
+	app := fiber.New()
+	api := humafiber.New(app, utils.BuildConfig("Book API", "1.0.0", config.Config.Environment))
+	cli := humacli.New(func(hooks humacli.Hooks, opts *struct{}) {
+		// setup route handlers
+		setupAPIServer(&api)
+
+		hooks.OnStart(func() {
+			// Start the server
+			app.Listen(":" + config.Config.Port)
+			slog.Info("Server is running on port " + config.Config.Port)
+		})
+	})
+
+	cli.Root().AddCommand(&cobra.Command{
+		Use:   "openapi",
+		Short: "Print the OpenAPI spec",
+		Run: func(cmd *cobra.Command, args []string) {
+			b, err := api.OpenAPI().YAML()
+			if err != nil {
+				panic(err)
+			}
+			outputFile := "./static/openapi/docs.yaml"
+			if len(args) == 1 {
+				outputFile = args[0]
+			}
+			f, err := os.Create(outputFile)
+			if err != nil {
+				slog.Error("Unable to open file", "error", err)
+			}
+			_, err = f.Write(b)
+			if err != nil {
+				slog.Error("Unable to write file", "error", err)
+			}
+			if err := f.Close(); err != nil {
+				slog.Error("Unable to close file", "error", err)
+			}
+		},
+	})
+
+	// Run the thing!
+	cli.Run()
 }
