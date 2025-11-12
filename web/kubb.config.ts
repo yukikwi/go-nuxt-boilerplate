@@ -1,14 +1,55 @@
 import { defineConfig } from '@kubb/core'
+import { pluginOas } from '@kubb/plugin-oas'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
+import { pluginClient } from '@kubb/plugin-client'
 
 export default defineConfig(() => {
   return {
-    root: '.',
+    root: '',
     input: {
-      path: '../server/src/docs/swagger.yaml',
+      path: '../server/src/static/openapi/docs.yaml',
     },
     output: {
-      path: './utils/backend_types',
+      path: './app',
     },
-    plugins: [],
+    plugins: [
+      pluginOas({
+        output: {
+          path: './clients/schemas',
+        },
+      }),
+      pluginTs({
+        output: {
+          path: './clients/types',
+        },
+      }),
+      pluginZod({
+        output: {
+          path: './clients/zod',
+        },
+      }),
+      pluginClient({
+        baseURL: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8081',
+        output: {
+          path: './clients/axios',
+          banner: '// @ts-nocheck'
+        },
+        group: {
+          type: 'tag',
+          name: ({ group }) => `${group}Service`,
+        },
+        transformers: {
+          name: (name, type) => {
+            return `${name}Client`
+          },
+        },
+        operations: true,
+        parser: 'zod',
+        pathParamsType: "object",
+        dataReturnType: 'full',
+        importPath: '@/utils/fetch',
+      }),
+    ],
   }
 })
