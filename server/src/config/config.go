@@ -10,6 +10,7 @@ type (
 		Port        string
 		Environment string
 		Prefork     bool
+		FrontendURL string
 	}
 )
 
@@ -21,5 +22,6 @@ func init() {
 		Port:        utils.GetEnv("PORT", "3000"),
 		Environment: utils.GetEnv("ENVIRONMENT", "development"),
 		Prefork:     utils.GetEnv("FIBER_PREFORK", "false") == "true",
+		FrontendURL: utils.GetEnv("FRONTEND_URL", ""),
 	}
 }

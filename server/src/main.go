@@ -8,6 +8,7 @@ import (
 	"github.com/danielgtaylor/huma/v2/adapters/humafiber"
 	"github.com/danielgtaylor/huma/v2/humacli"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/spf13/cobra"
 
 	// Internal packages
@@ -32,9 +33,7 @@ func setupAPIServer(api *huma.API) {
 }
 
 func main() {
-	app := fiber.New(fiber.Config{
-		Prefork: config.Config.Prefork,
-	})
+	// setup logger
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	logger = logger.With(
 		slog.Group("program_info",
@@ -42,6 +41,13 @@ func main() {
 		),
 	)
 	slog.SetDefault(logger)
+
+	app := fiber.New(fiber.Config{
+		Prefork: config.Config.Prefork,
+	})
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: config.Config.FrontendURL,
+	}))
 	api := humafiber.New(app, utils.BuildConfig("Book API", "1.0.0", config.Config.Environment))
 	cli := humacli.New(func(hooks humacli.Hooks, opts *struct{}) {
 		// setup route handlers
