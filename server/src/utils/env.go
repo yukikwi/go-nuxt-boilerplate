@@ -12,7 +12,7 @@ func init() {
 	if err != nil {
 		slog.Error("Error loading .env file", "error", err)
 	}
-	slog.Info("Loaded env from .env")
+	slog.Debug("Loaded env from .env")
 }
 
 func GetEnv(key string, fallback string) string {

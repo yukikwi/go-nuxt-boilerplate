@@ -9,6 +9,7 @@ type (
 		Db          string
 		Port        string
 		Environment string
+		Prefork     bool
 	}
 )
 
@@ -19,5 +20,6 @@ func init() {
 		Db:          utils.GetEnv("DB_DSN", ""),
 		Port:        utils.GetEnv("PORT", "3000"),
 		Environment: utils.GetEnv("ENVIRONMENT", "development"),
+		Prefork:     utils.GetEnv("FIBER_PREFORK", "false") == "true",
 	}
 }

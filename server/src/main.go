@@ -18,7 +18,7 @@ import (
 )
 
 func setupAPIServer(api *huma.API) {
-	slog.Info("Starting server in " + config.Config.Environment + " environment...")
+	slog.Debug("Starting server in " + config.Config.Environment + " environment...")
 	v1 := huma.NewGroup(*api, "/v1")
 
 	// Register handlers module routes
@@ -32,7 +32,16 @@ func setupAPIServer(api *huma.API) {
 }
 
 func main() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		Prefork: config.Config.Prefork,
+	})
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	logger = logger.With(
+		slog.Group("program_info",
+			slog.Int("pid", os.Getpid()),
+		),
+	)
+	slog.SetDefault(logger)
 	api := humafiber.New(app, utils.BuildConfig("Book API", "1.0.0", config.Config.Environment))
 	cli := humacli.New(func(hooks humacli.Hooks, opts *struct{}) {
 		// setup route handlers
@@ -40,8 +49,8 @@ func main() {
 
 		hooks.OnStart(func() {
 			// Start the server
-			app.Listen(":" + config.Config.Port)
 			slog.Info("Server is running on port " + config.Config.Port)
+			app.Listen(":" + config.Config.Port)
 		})
 	})
 

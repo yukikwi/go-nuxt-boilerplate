@@ -14,13 +14,13 @@ func OpenDatabaseConnection() *gorm.DB {
 	if err != nil {
 		slog.Error("Failed to connect database", "error", err)
 	} else {
-		slog.Info("Database connected.")
+		slog.Debug("Database connected.")
 	}
 
 	return db
 }
 
 func init() {
-	slog.Info("Connecting to database...")
+	slog.Debug("Connecting to database...")
 	Db = OpenDatabaseConnection()
 }
