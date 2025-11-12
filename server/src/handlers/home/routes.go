@@ -22,7 +22,13 @@ func RegisterHomeRoutes(versionGroup *huma.Group) {
 		return resp, nil
 	})
 
-	huma.Post(homeRouter, "/speak", func(ctx context.Context, input *SpeakPostRequestSerializer) (*SpeakPostResponseSerializer, error) {
+	huma.Register(homeRouter, huma.Operation{
+		OperationID: "home-post-speak",
+		Method:      http.MethodPost,
+		Path:        "/speak",
+		Summary:     "Post a home example speak",
+		Tags:        []string{"Home"},
+	}, func(ctx context.Context, input *SpeakPostRequestSerializer) (*SpeakPostResponseSerializer, error) {
 		return SpeakPostView(ctx, input)
 	})
 }
