@@ -11,28 +11,30 @@ export default defineConfig(() => {
       path: '../server/src/static/openapi/docs.yaml',
     },
     output: {
-      path: './app',
+      path: './app/clients',
+      clean: true,
+      barrelType: false
     },
     plugins: [
       pluginOas({
         output: {
-          path: './clients/schemas',
+          path: './schemas',
         },
       }),
       pluginTs({
         output: {
-          path: './clients/types',
+          path: './types',
         },
       }),
       pluginZod({
         output: {
-          path: './clients/zod',
+          path: './zod',
         },
       }),
       pluginClient({
         baseURL: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8081',
         output: {
-          path: './clients/axios',
+          path: './axios',
           banner: '// @ts-nocheck'
         },
         group: {
