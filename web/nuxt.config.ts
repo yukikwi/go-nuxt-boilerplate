@@ -11,10 +11,6 @@ export default defineNuxtConfig({
     entryImportMap: false
   },
 
-  modules: [
-    '@pinia/nuxt',
-  ],
-
   runtimeConfig: {
     public: {
       apiBase: 'http://localhost:8080',
