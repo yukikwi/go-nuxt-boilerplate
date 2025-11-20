@@ -31,4 +31,14 @@ func RegisterHomeRoutes(versionGroup *huma.Group) {
 	}, func(ctx context.Context, input *SpeakPostRequestSerializer) (*SpeakPostResponseSerializer, error) {
 		return SpeakPostView(ctx, input)
 	})
+
+	huma.Register(homeRouter, huma.Operation{
+		OperationID: "home-post-upload",
+		Method:      http.MethodPost,
+		Path:        "/upload",
+		Summary:     "Post a home example upload",
+		Tags:        []string{"Home"},
+	}, func(ctx context.Context, input *UploadPostRequestSerializer) (*UploadPostResponseSerializer, error) {
+		return UploadPostView(ctx, input)
+	})
 }

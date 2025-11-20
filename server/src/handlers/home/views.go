@@ -22,3 +22,23 @@ func SpeakPostView(ctx context.Context, input *SpeakPostRequestSerializer) (*Spe
 	resp.Body.Message = "You said: " + input.Body.Message
 	return resp, nil
 }
+
+func UploadPostView(ctx context.Context, input *UploadPostRequestSerializer) (*UploadPostResponseSerializer, error) {
+	formData := input.RawBody.Data()
+	resp := &UploadPostResponseSerializer{}
+	if formData.File.IsSet {
+		fileInfo := FileInfo{
+			FileName: formData.File.Filename,
+			Size:     formData.File.Size,
+		}
+		resp.Body.FileInfo = append(resp.Body.FileInfo, fileInfo)
+	}
+	for _, file := range formData.BulkFiles {
+		fileInfo := FileInfo{
+			FileName: file.Filename,
+			Size:     file.Size,
+		}
+		resp.Body.FileInfo = append(resp.Body.FileInfo, fileInfo)
+	}
+	return resp, nil
+}

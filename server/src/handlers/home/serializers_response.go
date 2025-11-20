@@ -11,3 +11,9 @@ type SpeakPostResponseSerializer struct {
 		Message string `json:"message" example:"You said: Hello!" doc:"Response message"`
 	}
 }
+
+type UploadPostResponseSerializer struct {
+	Body struct {
+		FileInfo []FileInfo `json:"file_info" doc:"Information about uploaded files"`
+	}
+}
