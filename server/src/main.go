@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log/slog"
 	"os"
 
@@ -83,6 +84,8 @@ func main() {
 			if err := f.Close(); err != nil {
 				slog.Error("Unable to close file", "error", err)
 			}
+
+			fmt.Println("OpenAPI spec written to " + outputFile)
 		},
 	})
 
