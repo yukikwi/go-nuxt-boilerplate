@@ -1,19 +1,21 @@
+import oxlintPlugin from "vite-plugin-oxlint";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
   features: {
-    devLogs: true
+    devLogs: true,
   },
 
   experimental: {
-    entryImportMap: false
+    entryImportMap: false,
   },
 
   runtimeConfig: {
     public: {
-      apiBase: 'http://localhost:8080',
+      apiBase: "http://localhost:8080",
     },
   },
 
@@ -22,12 +24,16 @@ export default defineNuxtConfig({
       compilerOptions: {
         noEmit: true,
         allowImportingTsExtensions: true,
-      }
+      },
     },
     nodeTsConfig: {
-      include: ['../kubb.config.ts']
-    }
+      include: ["../kubb.config.ts"],
+    },
   },
 
-  modules: ['@pinia/nuxt']
-})
+  modules: ["@pinia/nuxt"],
+
+  vite: {
+    plugins: [oxlintPlugin()],
+  },
+});
