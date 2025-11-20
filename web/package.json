@@ -25,10 +25,10 @@
   "devDependencies": {
     "@biomejs/biome": "2.3.5",
     "@kubb/cli": "^4.5.8",
-    "@kubb/core": "^4.5.8",
-    "@kubb/plugin-client": "^4.5.8",
-    "@kubb/plugin-oas": "^4.5.8",
-    "@kubb/plugin-vue-query": "^4.5.8",
-    "@kubb/plugin-zod": "^4.5.8"
+    "@kubb/core": "^4.5.10",
+    "@kubb/plugin-client": "^4.5.10",
+    "@kubb/plugin-oas": "^4.5.10",
+    "@kubb/plugin-vue-query": "^4.5.10",
+    "@kubb/plugin-zod": "^4.5.10"
   }
 }
